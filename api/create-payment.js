@@ -1,5 +1,5 @@
 // /api/create-payment.js
-// Vercel Serverless function — creates a NOWPayments BNB (BEP20) payment
+// Vercel Serverless function — creates a NOWPayments BNB (BSC) payment
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).send("Method Not Allowed");
@@ -7,17 +7,11 @@ export default async function handler(req, res) {
   try {
     const body = req.body || {};
 
-    // For BNB, amount must be in USD (NOWPayments converts internally)
-    const price_amount =
-      body.price_amount === null || body.price_amount === undefined
-        ? 0 // 0 means "buyer enters amount"
-        : body.price_amount;
-
+    const price_amount = body.price_amount ?? 0;
     const price_currency = body.price_currency || "usd";
 
-    // *** FIXED FOR BNB (BEP20) ***
-    const pay_currency = "bnb"; // NOWPayments uses "bnb" not "bnb_bep20"
-    const network = "bep20";
+    const pay_currency = "bnb"; // BNB
+    const network = "bsc";      // Binance Smart Chain
 
     const order_id = body.order_id || `order_${Date.now()}`;
 
@@ -26,31 +20,28 @@ export default async function handler(req, res) {
       `https://${process.env.VERCEL_URL || "yourproject.vercel.app"}`;
 
     const payload = {
-      price_amount: price_amount,
-      price_currency: price_currency,
-      pay_currency: pay_currency, // ← BNB ONLY
-      network: network, // ← BEP20
-      order_id: order_id,
-
+      price_amount,
+      price_currency,
+      pay_currency,
+      network,
+      order_id,
+      order_description: "Ticketmaster Resell Ticket",
       ipn_callback_url: `${siteUrl.replace(/\/$/, "")}/api/webhook`,
       success_url: `${siteUrl.replace(/\/$/, "")}/success.html`,
       cancel_url: `${siteUrl.replace(/\/$/, "")}/cancel.html`,
-
       metadata: body.metadata || {},
     };
 
     const NOW_KEY = process.env.NOWPAYMENTS_API_KEY;
-    if (!NOW_KEY)
-      return res
-        .status(500)
-        .json({ error: "NOWPAYMENTS_API_KEY not set in env" });
+    if (!NOW_KEY) {
+      return res.status(500).json({ error: "API key missing" });
+    }
 
-    // Create payment request
-    const resp = await fetch("https://api.nowpayments.io/v1/payment", {
+    const resp = await fetch("https://api.nowpayments.io/v1/invoice", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         "x-api-key": NOW_KEY,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
     });
@@ -58,13 +49,15 @@ export default async function handler(req, res) {
     const data = await resp.json();
 
     if (!resp.ok) {
-      return res.status(resp.status).json({ error: data });
+      console.error("NOWPayments error:", data);
+      return res.status(resp.status).json(data);
     }
 
-    // Return data (includes payment_url)
-    return res.status(200).json(data);
+    return res.status(200).json({
+      invoice_url: data.invoice_url || data.payment_url,
+    });
   } catch (err) {
-    console.error("create-payment error", err);
+    console.error("create-payment error:", err);
     return res.status(500).json({ error: err.message });
   }
 }
