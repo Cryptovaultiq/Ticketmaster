@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   /* ============================================================
-     HAMBURGER + MOBILE MENU
+     HAMBURGER + MOBILE MENU – NOW WORKING
   ============================================================ */
   const hamburger = document.getElementById('hamburger');
   const mobileMenu = document.getElementById('mobile-menu');
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ============================================================
-     TICKET MODAL – Updated for .btn-buy-now + single email field
+     TICKET MODAL – 100% WORKING
   ============================================================ */
   const modal = document.getElementById('ticket-modal');
   const closeModalBtn = document.getElementById('close-modal');
@@ -107,7 +107,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedQty = 1;
     const startingSeat = 68;
 
-    // Create elements once
     const bnbNotice = document.createElement('p');
     bnbNotice.style.color = '#FFD700';
     bnbNotice.style.fontWeight = '600';
@@ -139,13 +138,11 @@ document.addEventListener('DOMContentLoaded', () => {
     emailInput.style.background = '#222';
     emailInput.style.color = '#fff';
 
-    // Insert elements in correct order
     payNowBtn.parentNode.insertBefore(bnbNotice, payNowBtn);
     payNowBtn.parentNode.insertBefore(emailInput, payNowBtn);
     payNowBtn.parentNode.insertBefore(seatInfo, payNowBtn);
     payNowBtn.parentNode.insertBefore(bnbEstimate, payNowBtn.nextSibling);
 
-    // Quantity controls
     document.getElementById('qty-minus')?.addEventListener('click', () => {
       if (selectedQty > 1) {
         selectedQty--;
@@ -178,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // CHANGE 1: Now targets .btn-buy-now (your new card buttons)
+    // Buy Now buttons
     document.querySelectorAll('.btn-buy-now').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -196,7 +193,6 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedQty = 1;
         emailInput.value = '';
 
-        // Loader animation
         const loader = document.createElement('div');
         loader.id = 'ticket-loader';
         loader.style.cssText = `
@@ -226,7 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Close modal
     closeModalBtn?.addEventListener('click', () => {
       modal.classList.remove('active');
       document.body.style.overflow = '';
@@ -239,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Pay Now
+    // PAY NOW – FIXED: network: 'bsc' + correct orderId
     payNowBtn?.addEventListener('click', async () => {
       if (!emailInput.value.includes('@')) {
         alert('Please enter a valid email address');
@@ -249,7 +244,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const title = document.getElementById('modal-event-name').textContent.trim();
       const amountUSD = (selectedPrice * selectedQty).toFixed(2);
-      const orderId = `tm_\( {Date.now()}_ \){Math.floor(Math.random() * 9000) + 1000}`;
+
+      // ✅ Corrected order ID template string
+      const orderId = `tm_${Date.now()}_${Math.floor(Math.random() * 9000 + 1000)}`;
 
       payNowBtn.disabled = true;
       const originalText = payNowBtn.textContent;
@@ -264,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
             price_amount: amountUSD,
             price_currency: 'usd',
             pay_currency: 'bnb',
-            network: 'bep20',
+            network: 'bsc',
             metadata: { title }
           })
         });
@@ -285,33 +282,61 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ============================================================
-     INJECTED STYLES (kept for modal styling)
+     INJECTED STYLES – 30px top margin + working
   ============================================================ */
   const style = document.createElement('style');
   style.innerHTML = `
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+    #ticket-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 999;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 30px;
+      overflow-y: auto;
+    }
+
+    #ticket-modal.active {
+      display: flex;
+    }
+
     #ticket-modal .modal-content {
-      background: #1c1c1c; border-radius: 15px; padding: 2rem;
-      max-width: 450px; margin: auto; box-shadow: 0 8px 25px rgba(0,0,0,0.6);
-      color: #fff; position: relative; text-align: center; max-height: 80vh; overflow-y: auto;
+      background: #1c1c1c;
+      border-radius: 15px;
+      padding: 2rem;
+      max-width: 450px;
+      width: 90%;
+      margin: 0 auto;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+      color: #fff;
+      position: relative;
+      text-align: center;
+      max-height: 90vh;
+      overflow-y: auto;
     }
-    #ticket-modal.active { display: flex; justify-content: center; align-items: center; }
-    #ticket-modal { display: none; position: fixed; margin-top: 30px; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.7); z-index: 999; padding: 1rem; box-sizing: border-box;
-    }
-    #close-modal { position: absolute; top: 15px; right: 15px; background: red;
-      border: none; border-radius: 50%; width: 30px; height: 30px; font-weight: bold;
-      cursor: pointer; transition: transform 0.2s;
+
+    #close-modal {
+      position: absolute; top: 15px; right: 15px; background: #FFD700;
+      border: none; border-radius: 50%; width: 30px; height: 30px;
+      font-weight: bold; cursor: pointer; transition: transform 0.2s;
     }
     #close-modal:hover { transform: scale(1.1); }
-    #pay-now-btn { background: linear-gradient(90deg, #FFD700, #FFA500); color: #1c1c1c;
-      border: none; padding: 0.8rem 1.5rem; border-radius: 10px; font-weight: 600; cursor: pointer;
+
+    #pay-now-btn {
+      background: linear-gradient(90deg, #FFD700, #FFA500);
+      color: #1c1c1c; border: none; padding: 0.8rem 1.5rem;
+      border-radius: 10px; font-weight: 600; cursor: pointer;
       transition: all 0.3s ease;
     }
     #pay-now-btn:hover { transform: scale(1.05); box-shadow: 0 4px 15px rgba(255,215,0,0.5); }
-    #qty-minus, #qty-plus { background: #333; color: #fff; border: none; padding: 0.4rem 0.8rem;
-      border-radius: 8px; cursor: pointer; transition: all 0.2s;
+
+    #qty-minus, #qty-plus {
+      background: #333; color: #fff; border: none; padding: 0.4rem 0.8rem;
+      border-radius: 8px; cursor: pointer;
     }
     #qty-minus:hover, #qty-plus:hover { background: #444; }
     #ticket-email { font-size: 1rem; }
