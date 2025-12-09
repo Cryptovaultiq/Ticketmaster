@@ -2,8 +2,20 @@
 // Vercel Serverless function — creates a NOWPayments BNB (BSC) payment
 
 export default async function handler(req, res) {
-  if (req.method !== "POST")
+  // --- ✅ Enable CORS ---
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  // Respond to preflight request
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  // Only allow POST
+  if (req.method !== "POST") {
     return res.status(405).send("Method Not Allowed");
+  }
 
   try {
     const body = req.body || {};
@@ -11,11 +23,10 @@ export default async function handler(req, res) {
     const price_amount = Number(body.price_amount ?? 0);
     const price_currency = body.price_currency || "usd";
 
-    // ✅ Absolutely correct for BNBBSC
+    // Correct for BNB on Binance Smart Chain
     const pay_currency = "bnb";
     const network = "bsc";
 
-    // Use the same order_id from frontend
     const order_id =
       body.order_id || `tm_${Date.now()}_${Math.floor(Math.random() * 9000)}`;
 
@@ -26,7 +37,7 @@ export default async function handler(req, res) {
 
     const cleanUrl = siteUrl.replace(/\/$/, "");
 
-    // FINAL NOWPAYMENTS PAYLOAD (Correct!)
+    // Payload for NOWPayments
     const payload = {
       order_id,
       price_amount,
@@ -41,12 +52,11 @@ export default async function handler(req, res) {
     };
 
     const NOW_KEY = process.env.NOWPAYMENTS_API_KEY;
-
     if (!NOW_KEY) {
       return res.status(500).json({ error: "API key missing" });
     }
 
-    // NOWPayments Invoice API
+    // Request invoice from NOWPayments
     const resp = await fetch("https://api.nowpayments.io/v1/invoice", {
       method: "POST",
       headers: {
@@ -58,13 +68,11 @@ export default async function handler(req, res) {
 
     const data = await resp.json();
 
-    // Handle API-level errors
     if (!resp.ok) {
       console.error("NOWPayments error:", data);
       return res.status(resp.status).json(data);
     }
 
-    // Return invoice link
     return res.status(200).json({
       invoice_url: data.invoice_url || data.payment_url,
     });
