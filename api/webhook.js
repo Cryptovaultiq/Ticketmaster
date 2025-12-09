@@ -2,9 +2,10 @@
 import crypto from "crypto";
 
 export const config = {
-  api: { bodyParser: false },
+  api: { bodyParser: false }, // Required: NOWPayments sends raw body
 };
 
+// Helper to get raw body
 async function getRawBody(req) {
   return new Promise((resolve, reject) => {
     const chunks = [];
@@ -15,6 +16,19 @@ async function getRawBody(req) {
 }
 
 export default async function handler(req, res) {
+  // === OPTIONAL (SAFE) CORS ===
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, x-nowpayments-signature"
+  );
+
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+  // ============================
+
   if (req.method !== "POST") {
     return res.status(405).send("Method Not Allowed");
   }
@@ -22,7 +36,7 @@ export default async function handler(req, res) {
   try {
     const rawBody = await getRawBody(req);
 
-    // Read signature from headers
+    // Signature header
     const signature =
       req.headers["x-nowpayments-signature"] ||
       req.headers["x-nowpayments-sig"];
@@ -31,13 +45,13 @@ export default async function handler(req, res) {
       return res.status(400).send("Missing signature");
     }
 
-    // Get IPN secret from env
+    // Your NOWPayments webhook secret
     const secret = process.env.NOWPAYMENTS_IPN_SECRET;
     if (!secret) {
       return res.status(500).send("IPN secret missing");
     }
 
-    // Compute HMAC for verification
+    // Verify signature
     const computedHmac = crypto
       .createHmac("sha512", secret)
       .update(rawBody)
@@ -48,18 +62,21 @@ export default async function handler(req, res) {
       return res.status(400).send("Invalid signature");
     }
 
-    // Parse the validated payload
+    // Parse the valid payload
     const payload = JSON.parse(rawBody.toString());
-    console.log("✅ NOWPayments Webhook Received:", payload);
+    console.log("NOWPayments Webhook Received:", payload);
 
-    // SUCCESS CONDITIONS
+    // Payment success status
     if (["finished", "confirmed"].includes(payload.payment_status)) {
       console.log(
-        `💰 PAYMENT SUCCESS → Order: ${payload.order_id} | Amount: ${payload.pay_amount} ${payload.pay_currency}`
+        `✅ PAYMENT SUCCESS — Order ${payload.order_id} | Amount: ${payload.pay_amount} ${payload.pay_currency}`
       );
 
-      // TODO: your business logic here
-      // update DB, send email, unlock product, etc.
+      // 👉 Put your business logic here
+      // - Save to DB
+      // - Mark ticket sold
+      // - Send email
+      // - Generate QR ticket
     }
 
     return res.status(200).send("OK");
