@@ -1,7 +1,9 @@
 // /api/webhook.js
 import crypto from "crypto";
 
-export const config = { api: { bodyParser: false } };
+export const config = {
+  api: { bodyParser: false },
+};
 
 async function getRawBody(req) {
   return new Promise((resolve, reject) => {
@@ -13,40 +15,56 @@ async function getRawBody(req) {
 }
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).send("Method Not Allowed");
+  if (req.method !== "POST") {
+    return res.status(405).send("Method Not Allowed");
+  }
 
   try {
-    const raw = await getRawBody(req);
-    const headerSig =
-      req.headers["x-nowpayments-signature"] || req.headers["x-nowpayments-sig"];
+    const rawBody = await getRawBody(req);
 
-    if (!headerSig) return res.status(400).send("Missing signature");
+    // Read signature from headers
+    const signature =
+      req.headers["x-nowpayments-signature"] ||
+      req.headers["x-nowpayments-sig"];
 
+    if (!signature) {
+      return res.status(400).send("Missing signature");
+    }
+
+    // Get IPN secret from env
     const secret = process.env.NOWPAYMENTS_IPN_SECRET;
-    if (!secret) return res.status(500).send("IPN secret missing");
+    if (!secret) {
+      return res.status(500).send("IPN secret missing");
+    }
 
-    const computed = crypto.createHmac("sha512", secret).update(raw).digest("hex");
+    // Compute HMAC for verification
+    const computedHmac = crypto
+      .createHmac("sha512", secret)
+      .update(rawBody)
+      .digest("hex");
 
-    if (computed !== headerSig) {
-      console.warn("Invalid signature");
+    if (computedHmac !== signature) {
+      console.warn("❌ Invalid NOWPayments signature");
       return res.status(400).send("Invalid signature");
     }
 
-    const payload = JSON.parse(raw.toString());
+    // Parse the validated payload
+    const payload = JSON.parse(rawBody.toString());
+    console.log("✅ NOWPayments Webhook Received:", payload);
 
-    console.log("Payment webhook:", payload);
-
+    // SUCCESS CONDITIONS
     if (["finished", "confirmed"].includes(payload.payment_status)) {
       console.log(
-        `Payment SUCCESS – Order: ${payload.order_id} | ${payload.pay_amount} BNB`
+        `💰 PAYMENT SUCCESS → Order: ${payload.order_id} | Amount: ${payload.pay_amount} ${payload.pay_currency}`
       );
-      // YOUR SUCCESS LOGIC HERE
-      // Example: mark order as paid, send email, update database, etc.
+
+      // TODO: your business logic here
+      // update DB, send email, unlock product, etc.
     }
 
-    res.status(200).send("OK");
-  } catch (err) {
-    console.error("Webhook error:", err);
-    res.status(500).send("Error");
+    return res.status(200).send("OK");
+  } catch (error) {
+    console.error("Webhook error:", error);
+    return res.status(500).send("Server Error");
   }
 }
