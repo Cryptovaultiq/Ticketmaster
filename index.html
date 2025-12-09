@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ticketmaster | Find & Buy Tickets</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+	
+  <!-- Fixed Header with Blue Logo Background -->
+  <header class="header">
+    <div class="container header-content">
+      <div class="logo">
+        <img src="logo.png" alt="Ticketmaster Logo" />
+      </div>
+
+      <!-- DESKTOP NAV -->
+      <nav class="nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="#" class="nav-link">Music</a>
+        <a href="#" class="nav-link">Football</a>
+        <a href="#" class="nav-link">Festival</a>
+      </nav>
+
+      <div class="header-actions">
+        <div class="search-bar">
+          <input type="text" placeholder="Search for events, artists, venues..." />
+          <button>Search</button>
+        </div>
+        <button class="btn-signin">Sign In</button>
+      </div>
+
+      <!-- HAMBURGER -->
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- MOBILE MENU (Matches your CSS) -->
+    <div class="mobile-menu" id="mobile-menu">
+      <a href="resell.html">Resell page</a>
+      <a href="#">Music</a>
+      <a href="#">Football</a>
+      <a href="#">Festival</a>
+    </div>
+  </header>
+
+  <!-- Hero Carousel -->
+  <section class="hero-carousel">
+    <div class="carousel-container">
+      <div class="carousel-slide active">
+        <img src="assets/hero-1.png" alt="Concert" />
+        <div class="carousel-caption">
+          <h1>Live Events Are Back</h1>
+          <p>Find concerts, sports, theater & more near you.</p>
+          <button class="btn-primary">Explore Events</button>
+        </div>
+      </div>
+      <div class="carousel-slide">
+        <img src="assets/hero-2.jpeg" alt="NBA" />
+        <div class="carousel-caption">
+          <h1>NBA Season Is Here</h1>
+          <p>Get courtside seats to your favorite teams.</p>
+          <button class="btn-primary">See Games</button>
+        </div>
+      </div>
+      <div class="carousel-slide">
+        <img src="assets/hero-3.jpeg" alt="Broadway" />
+        <div class="carousel-caption">
+          <h1>Broadway Returns</h1>
+          <p>Experience the magic of live theater.</p>
+          <button class="btn-primary">Book Now</button>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-prev"><img src="previous.png" alt="image" class="prev" /></button>
+    <button class="carousel-next"><img src="next.png" alt="image" class="next" /></button>
+    <div class="carousel-dots"></div>
+  </section>
+
+  <!-- 10 Featured Events -->
+  <section class="featured-events container">
+    <h2>Trending Near You</h2>
+    <div class="events-grid">
+      <!-- Event 1 -->
+      <div class="event-card">
+        <img src="https://picsum.photos/300/200?random=1" alt="Beyoncé" />
+        <div class="event-info">
+          <h3>Beyoncé - Renaissance World Tour</h3>
+          <p class="date">Sat, Dec 20 • 7:30 PM</p>
+          <p class="venue">Madison Square Garden • New York, NY</p>
+          <button class="btn-tickets">Tickets</button>
+        </div>
+      </div>
+      <!-- Event 2 -->
+      <div class="event-card">
+        <img src="https://picsum.photos/300/200?random=2" alt="Lakers" />
+        <div class="event-info">
+          <h3>Lakers vs Warriors</h3>
+          <p class="date">Fri, Dec 19 • 8:00 PM</p>
+          <p class="venue">Crypto.com Arena • Los Angeles, CA</p>
+          <button class="btn-tickets">Tickets</button>
+        </div>
+      </div>
+      <!-- Event 3 -->
+      <div class="event-card">
+        <img src="https://picsum.photos/300/200?random=3" alt="Hamilton" />
+        <div class="event-info">
+          <h3>Hamilton</h3>
+          <p class="date">Wed, Dec 17 • 7:00 PM</p>
+          <p class="venue">Richard Rodgers Theatre • New York, NY</p>
+          <button class="btn-tickets">Tickets</button>
+        </div>
+      </div>
+      <!-- Event 4 -->
+      <div class="event-card">
+        <img src="https://picsum.photos/300/200?random=4" alt="Taylor Swift" />
+        <div class="event-info">
+          <h3>Taylor Swift - The Eras Tour</h3>
+          <p class="date">Sun, Dec 21 • 6:30 PM</p>
+          <p class="venue">SoFi Stadium • Inglewood, CA</p>
+          <button class="btn-tickets">Tickets</button>
+        </div>
+      </div>
+      <!-- Event 5 -->
+      <div class="event-card">
+        <img src="https://picsum.photos/300/200?random=5" alt="Coldplay" />
+        <div class="event-info">
+          <h3>Coldplay - Music of the Spheres</h3>
+          <p class="date">Mon, Dec 22 • 7:00 PM</p>
+          <p class="venue">Wembley Stadium • London, UK</p>
+          <button class="btn-tickets">Tickets</button>
+        </div>
+      </div>
+      <!-- Event 6 -->
+      <div class="event-card">
+        <img src="https://picsum.photos/300/200?random=6" alt="NFL" />
+        <div class="event-info">
+          <h3>Chiefs vs Eagles</h3>
+          <p class="date">Sun, Dec 21 • 4:25 PM</p>
+          <p class="venue">Arrowhead Stadium • Kansas City, MO</p>
+          <button class="btn-tickets">Tickets</button>
+        </div>
+      </div>
+      <!-- Event 7 -->
+      <div class="event-card">
+        <img src="https://picsum.photos/300/200?random=7" alt="Wicked" />
+        <div class="event-info">
+          <h3>Wicked</h3>
+          <p class="date">Tue, Dec 16 • 8:00 PM</p>
+          <p class="venue">Gershwin Theatre • New York, NY</p>
+          <button class="btn-tickets">Tickets</button>
+        </div>
+      </div>
+      <!-- Event 8 -->
+      <div class="event-card">
+        <img src="https://picsum.photos/300/200?random=8" alt="Drake" />
+        <div class="event-info">
+          <h3>Drake - It's All A Blur Tour</h3>
+          <p class="date">Thu, Dec 18 • 7:30 PM</p>
+          <p class="venue">Scotiabank Arena • Toronto, ON</p>
+          <button class="btn-tickets">Tickets</button>
+        </div>
+      </div>
+      <!-- Event 9 -->
+      <div class="event-card">
+        <img src="https://picsum.photos/300/200?random=9" alt="UFC" />
+        <div class="event-info">
+          <h3>UFC 310: Edwards vs Covington</h3>
+          <p class="date">Sat, Dec 13 • 10:00 PM</p>
+          <p class="venue">T-Mobile Arena • Las Vegas, NV</p>
+          <button class="btn-tickets">Tickets</button>
+        </div>
+      </div>
+      <!-- Event 10 -->
+      <div class="event-card">
+        <img src="https://picsum.photos/300/200?random=10" alt="Lion King" />
+        <div class="event-info">
+          <h3>The Lion King</h3>
+          <p class="date">Fri, Dec 19 • 8:00 PM</p>
+          <p class="venue">Minskoff Theatre • New York, NY</p>
+          <button class="btn-tickets">Tickets</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-col">
+        <h4>Ticketmaster</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Help</h4>
+        <ul>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Gift Cards</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Partners</h4>
+        <ul>
+          <li><a href="#">Venues</a></li>
+          <li><a href="#">Promoters</a></li>
+          <li><a href="#">Teams</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Follow Us</h4>
+        <div class="social-links">
+          <a href="#">Facebook</a>
+          <a href="#">Twitter</a>
+          <a href="#">Instagram</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Ticketmaster. All rights reserved. <a href="#">Privacy</a> | <a href="#">Terms</a></p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resell Tickets – Ticketmaster Clone</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="container header-content">
+      <div class="logo">
+        <img src="logo.png" alt="Ticketmaster Logo" />
+      </div>
+
+      <nav class="nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="#" class="nav-link">Music</a>
+        <a href="#" class="nav-link">Football</a>
+        <a href="#" class="nav-link">Festival</a>
+      </nav>
+
+      <div class="header-actions">
+        <div class="search-bar">
+          <input type="text" placeholder="Search for events, artists, venues..." />
+          <button>Search</button>
+        </div>
+        <button class="btn-signin">Sign In</button>
+      </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <div class="mobile-menu" id="mobile-menu">
+      <a href="index.html">Home</a>
+      <a href="#">Music</a>
+      <a href="#">Football</a>
+      <a href="#">Festival</a>
+    </div>
+  </header>
+
+  <!-- BUY TICKET MODAL -->
+  <div class="modal" id="ticket-modal">
+    <div class="modal-content">
+      <span class="close" id="close-modal">×</span>
+      <h2 id="modal-event-name">Event Name</h2>
+      <p><strong>Row:</strong> <span id="modal-row">A</span> |
+         <strong>Section:</strong> <span id="modal-section">102</span> |
+         <strong>Block:</strong> <span id="modal-block">B</span></p>
+      <div class="price-info">
+        <p>Price per ticket: <strong>$<span id="modal-price">50</span></strong></p>
+      </div>
+      <div class="quantity-selector">
+        <button id="qty-minus">-</button>
+        <input type="number" id="qty-input" value="1" min="1" max="8" readonly>
+        <button id="qty-plus">+</button>
+      </div>
+      <div class="total-price">
+        <p>Total: <strong>$<span id="total-amount">50</span></strong></p>
+      </div>
+      <button class="btn-primary" id="pay-now-btn" style="width:100%; margin-top:1rem;">Pay Now</button>
+    </div>
+  </div>
+
+  <!-- ========================= -->
+  <!-- EVENTS IN CARD STYLE (like infinite scroll) -->
+  <!-- ========================= -->
+
+  <!-- BAD OMENS -->
+  <section class="hero-card-event" data-price="100">
+    <div class="hero-card">
+      <div class="hero-card-img">
+        <img src="bad-omen.jpg" alt="BAD OMENS">
+      </div>
+      <div class="hero-card-info">
+        <h1 class="event-title">BAD OMENS: DO YOU FEEL LOVE NORTH AMERICAN TOUR</h1>
+        <p class="event-location">Delta Center, Salt Lake City, UT</p>
+        <p class="event-time">Sun • Feb 22, 2026 • 7:00 PM</p>
+        <div class="hero-card-footer">
+          <button class="btn-buy-now btn-primary">Buy Now</button>
+          <span class="ticket-avail">Available 8 Tickets</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- The Band CAMINO -->
+  <section class="hero-card-event" data-price="32">
+    <div class="hero-card">
+      <div class="hero-card-img">
+        <img src="band-camino.jpg" alt="The Band CAMINO">
+      </div>
+      <div class="hero-card-info">
+        <h1 class="event-title">The Band CAMINO</h1>
+        <p class="event-location">Manchester New Century Hall, Manchester</p>
+        <p class="event-time">Wed • Dec 10, 2025 • 7:00 PM</p>
+        <div class="hero-card-footer">
+          <button class="btn-buy-now btn-primary">Buy Now</button>
+          <span class="ticket-avail">Available 6 Tickets</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mariah the Scientist -->
+  <section class="hero-card-event" data-price="70">
+    <div class="hero-card">
+      <div class="hero-card-img">
+        <img src="mariah.jpg" alt="Mariah the Scientist">
+      </div>
+      <div class="hero-card-info">
+        <h1 class="event-title">R&B/Urban Soul: Mariah the Scientist Tickets</h1>
+        <p class="event-location">Manchester Academy, Manchester</p>
+        <p class="event-time">Wed • Jan 14, 2026 • 7:00 PM</p>
+        <div class="hero-card-footer">
+          <button class="btn-buy-now btn-primary">Buy Now</button>
+          <span class="ticket-avail">Available 5 Tickets</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Beyoncé -->
+  <section class="hero-card-event" data-price="50">
+    <div class="hero-card">
+      <div class="hero-card-img">
+        <img src="assets/hero-1.png" alt="Beyoncé">
+      </div>
+      <div class="hero-card-info">
+        <h1 class="event-title">Beyoncé - Renaissance World Tour</h1>
+        <p class="event-location">Madison Square Garden • New York, NY</p>
+        <p class="event-time">Sat • Dec 20 • 7:30 PM</p>
+        <div class="hero-card-footer">
+          <button class="btn-buy-now btn-primary">Buy Now</button>
+          <span class="ticket-avail">Available 4 Tickets</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lakers vs Warriors -->
+  <section class="hero-card-event" data-price="50">
+    <div class="hero-card">
+      <div class="hero-card-img">
+        <img src="assets/hero-2.jpeg" alt="Lakers vs Warriors">
+      </div>
+      <div class="hero-card-info">
+        <h1 class="event-title">Lakers vs Warriors</h1>
+        <p class="event-location">Crypto.com Arena • Los Angeles, CA</p>
+        <p class="event-time">Fri • Dec 19 • 8:00 PM</p>
+        <div class="hero-card-footer">
+          <button class="btn-buy-now btn-primary">Buy Now</button>
+          <span class="ticket-avail">Available 5 Tickets</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INFINITE SCROLL STRIP (kept as is) -->
+  <div class="events-wrapper">
+    <div class="events-scroll">
+      <div class="scroll-event-card">
+        <img src="bad-omen.jpg"><h3>Bad Omens</h3><p>Salt Lake City • Feb 22</p>
+      </div>
+      <div class="scroll-event-card">
+        <img src="band-camino.jpg"><h3>The Band CAMINO</h3><p>Manchester • Dec 10</p>
+      </div>
+      <div class="scroll-event-card">
+        <img src="mariah.jpg"><h3>Mariah the Scientist</h3><p>Manchester • Jan 14</p>
+      </div>
+      <!-- Duplicates for seamless loop -->
+      <div class="scroll-event-card">
+        <img src="bad-omen.jpg"><h3>Bad Omens</h3><p>Salt Lake City • Feb 22</p>
+      </div>
+      <div class="scroll-event-card">
+        <img src="band-camino.jpg"><h3>The Band CAMINO</h3><p>Manchester • Dec 10</p>
+      </div>
+      <div class="scroll-event-card">
+        <img src="mariah.jpg"><h3>Mariah the Scientist</h3><p>Manchester • Jan 14</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-col">
+        <h4>Ticketmaster</h4>
+        <ul><li><a href="#">About Us</a></li><li><a href="#">Careers</a></li><li><a href="#">Press</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h4>Help</h4>
+        <ul><li><a href="#">Contact Us</a></li><li><a href="#">FAQs</a></li><li><a href="#">Gift Cards</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h4>Partners</h4>
+        <ul><li><a href="#">Venues</a></li><li><a href="#">Promoters</a></li><li><a href="#">Teams</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h4>Follow Us</h4>
+        <div class="social-links">
+          <a href="#">Facebook</a> <a href="#">Twitter</a> <a href="#">Instagram</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Ticketmaster. All rights reserved. <a href="#">Privacy</a> | <a href="#">Terms</a></p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
