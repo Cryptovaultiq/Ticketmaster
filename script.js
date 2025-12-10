@@ -260,8 +260,6 @@ document.addEventListener('DOMContentLoaded', () => {
             order_id: orderId,
             price_amount: amountUSD,
             price_currency: 'usd',
-            pay_currency: 'bnb',
-            network: 'bsc',
             metadata: { title }
           })
         });
