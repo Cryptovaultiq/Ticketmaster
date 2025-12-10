@@ -138,30 +138,112 @@ document.addEventListener('DOMContentLoaded', () => {
     emailInput.style.background = '#222';
     emailInput.style.color = '#fff';
 
+    /* ============================================================
+       MESSAGE SELLER BUTTON + VERIFIED BADGE
+    ============================================================ */
+    const msgSellerBtn = document.createElement('button');
+    msgSellerBtn.innerHTML = 'Message Seller <span id="verify-badge">VERIFIED</span>';
+    msgSellerBtn.id = 'msg-seller-btn';
+    msgSellerBtn.style.display = 'block';
+    msgSellerBtn.style.margin = '0 auto 1rem';
+    msgSellerBtn.style.padding = '0.7rem 1.4rem';
+    msgSellerBtn.style.border = 'none';
+    msgSellerBtn.style.borderRadius = '12px';
+    msgSellerBtn.style.fontWeight = '600';
+    msgSellerBtn.style.cursor = 'pointer';
+    msgSellerBtn.style.background = '#0600FF';
+    msgSellerBtn.style.color = '#fff';
+    msgSellerBtn.style.transition = '0.3s';
+
+    const verifyBadge = msgSellerBtn.querySelector('#verify-badge');
+    verifyBadge.style.background = '#FF00AD';
+    verifyBadge.style.color = '#fff';
+    verifyBadge.style.padding = '0.2rem 0.5rem';
+    verifyBadge.style.borderRadius = '6px';
+    verifyBadge.style.fontSize = '0.8rem';
+    verifyBadge.style.marginLeft = '8px';
+    verifyBadge.style.fontWeight = '700';
+
+    msgSellerBtn.addEventListener('mouseenter', () => {
+      msgSellerBtn.style.transform = 'scale(1.06)';
+    });
+    msgSellerBtn.addEventListener('mouseleave', () => {
+      msgSellerBtn.style.transform = 'scale(1)';
+    });
+    msgSellerBtn.addEventListener('click', () => {
+  window.open('https://twitter.com/YourProfileHandle', '_blank');
+});
+
+    /* ============================================================
+       BLUE BORDER BOX FOR PRICE + QTY + TOTAL
+    ============================================================ */
+    const priceBox = document.createElement('div');
+    priceBox.style.border = '2px solid #007bff';
+    priceBox.style.padding = '1rem';
+    priceBox.style.borderRadius = '12px';
+    priceBox.style.marginBottom = '1rem';
+    priceBox.style.color = '#fff';
+    priceBox.style.textAlign = 'center';
+    priceBox.style.display = 'flex';
+    priceBox.style.flexDirection = 'column';
+    priceBox.style.gap = '1rem';
+
+    const priceLine = document.createElement('p');
+    priceLine.id = 'price-per-ticket';
+    priceLine.innerHTML = `Price per ticket: <strong>$0.00</strong>`;
+
+    const qtyBox = document.createElement('div');
+    qtyBox.style.display = 'flex';
+    qtyBox.style.justifyContent = 'center';
+    qtyBox.style.alignItems = 'center';
+    qtyBox.style.gap = '12px';
+
+    const qtyMinus = document.getElementById('qty-minus');
+    const qtyInput = document.getElementById('qty-input');
+    const qtyPlus = document.getElementById('qty-plus');
+
+    qtyBox.appendChild(qtyMinus);
+    qtyBox.appendChild(qtyInput);
+    qtyBox.appendChild(qtyPlus);
+
+    const totalLine = document.createElement('p');
+    totalLine.innerHTML = `Total: <strong id="total-amount">0.00</strong>`;
+
+    priceBox.appendChild(priceLine);
+    priceBox.appendChild(qtyBox);
+    priceBox.appendChild(totalLine);
+
+    /* INSERT ITEMS IN CORRECT ORDER */
     payNowBtn.parentNode.insertBefore(bnbNotice, payNowBtn);
+    payNowBtn.parentNode.insertBefore(msgSellerBtn, payNowBtn);
+    payNowBtn.parentNode.insertBefore(priceBox, payNowBtn);
     payNowBtn.parentNode.insertBefore(emailInput, payNowBtn);
     payNowBtn.parentNode.insertBefore(seatInfo, payNowBtn);
     payNowBtn.parentNode.insertBefore(bnbEstimate, payNowBtn.nextSibling);
 
-    document.getElementById('qty-minus')?.addEventListener('click', () => {
+    /* ============================================================
+       QUANTITY BUTTONS
+    ============================================================ */
+    qtyMinus?.addEventListener('click', () => {
       if (selectedQty > 1) {
         selectedQty--;
-        document.getElementById('qty-input').value = selectedQty;
+        qtyInput.value = selectedQty;
         updateTotal();
       }
     });
 
-    document.getElementById('qty-plus')?.addEventListener('click', () => {
+    qtyPlus?.addEventListener('click', () => {
       if (selectedQty < 8) {
         selectedQty++;
-        document.getElementById('qty-input').value = selectedQty;
+        qtyInput.value = selectedQty;
         updateTotal();
       }
     });
 
     function updateTotal() {
+      priceLine.innerHTML = `Price per ticket: <strong>$${selectedPrice.toFixed(2)}</strong>`;
       const totalUSD = selectedPrice * selectedQty;
-      document.getElementById('total-amount').textContent = totalUSD.toFixed(2);
+      totalLine.innerHTML = `Total: <strong>$${totalUSD.toFixed(2)}</strong>`;
       const bnbRate = 906.27;
       const totalBNB = (totalUSD / bnbRate).toFixed(6);
       bnbEstimate.textContent = `Estimated: ${totalBNB} BNB`;
@@ -175,7 +257,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Buy Now buttons
+    /* ============================================================
+       BUY NOW BUTTON
+    ============================================================ */
     document.querySelectorAll('.btn-buy-now').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -214,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
           document.body.removeChild(loader);
           document.getElementById('modal-event-name').textContent = title;
           document.getElementById('modal-price').textContent = price.toFixed(2);
-          document.getElementById('qty-input').value = 1;
+          qtyInput.value = 1;
           updateTotal();
           modal.classList.add('active');
           document.body.style.overflow = 'hidden';
@@ -234,7 +318,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // PAY NOW – FIXED: network: 'bsc' + correct orderId
     payNowBtn?.addEventListener('click', async () => {
       if (!emailInput.value.includes('@')) {
         alert('Please enter a valid email address');
@@ -245,7 +328,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const title = document.getElementById('modal-event-name').textContent.trim();
       const amountUSD = (selectedPrice * selectedQty).toFixed(2);
 
-      // ✅ Corrected order ID template string
       const orderId = `tm_${Date.now()}_${Math.floor(Math.random() * 9000 + 1000)}`;
 
       payNowBtn.disabled = true;
@@ -280,7 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ============================================================
-     INJECTED STYLES – 30px top margin + working
+     INJECTED STYLES
   ============================================================ */
   const style = document.createElement('style');
   style.innerHTML = `
@@ -342,4 +424,4 @@ document.addEventListener('DOMContentLoaded', () => {
   `;
   document.head.appendChild(style);
 
-});// redeploy fix
+});
