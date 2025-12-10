@@ -292,6 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
       display: none;
       position: fixed;
       inset: 0;
+      margin-top: 65px;
       background: rgba(0,0,0,0.7);
       z-index: 999;
       align-items: flex-start;
@@ -320,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     #close-modal {
-      position: absolute; top: 15px; right: 15px; background: #FFD700;
+      position: absolute; top: 15px; right: 15px; background: red;
       border: none; border-radius: 50%; width: 30px; height: 30px;
       font-weight: bold; cursor: pointer; transition: transform 0.2s;
     }
