@@ -46,7 +46,6 @@ export default async function handler(req, res) {
       ipn_callback_url: `${cleanUrl}/api/webhook`,
       success_url: `${cleanUrl}/success.html`,
       cancel_url: `${cleanUrl}/cancel.html`,
-      metadata: body.metadata || {},
     };
 
     const NOW_KEY = process.env.NOWPAYMENTS_API_KEY;
