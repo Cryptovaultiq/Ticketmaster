@@ -42,8 +42,6 @@ export default async function handler(req, res) {
       order_id,
       price_amount,
       price_currency,
-      pay_currency,
-      network,
       order_description: "Ticket Purchase",
       ipn_callback_url: `${cleanUrl}/api/webhook`,
       success_url: `${cleanUrl}/success.html`,
