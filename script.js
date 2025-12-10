@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
       msgSellerBtn.style.transform = 'scale(1)';
     });
     msgSellerBtn.addEventListener('click', () => {
-  window.open('https://twitter.com/YourProfileHandle', '_blank');
+  window.open('https://twitter.com/@stavrimetaxa98', '_blank');
 });
 
     /* ============================================================
